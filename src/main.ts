@@ -1,4 +1,13 @@
-
+interface BarData {
+    Open: number;
+    High: number;
+    Low: number;
+    Close: number;
+    Time: number;
+}
+interface ApiResponse {
+    Bars: BarData[];
+}
 class Bar {
 	constructor(
 		public open: number,
@@ -35,7 +44,6 @@ class Chart {
 	private barWidth: number = 5
 	private minBarWidth: number = 2
 	private maxBarWidth: number = 20
-    private priceStep: number = 50 
 	private dateStep: number = 50 
 	constructor(private canvas: HTMLCanvasElement) {
 		this.init()
@@ -155,9 +163,8 @@ class Chart {
 class DataLoader {
 	async fetchData(url: string): Promise<Bar[]> {
 		const response = await fetch(url)
-		const data = await response.json()
-		console.log(data)
-		return data[0].Bars.map((barData: any) => {
+		const data: ApiResponse[] = await response.json()
+		return data[0].Bars.map((barData: BarData) => {
 			return new Bar(
 				barData.Open,
 				barData.High,
